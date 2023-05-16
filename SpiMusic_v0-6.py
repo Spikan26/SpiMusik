@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import re
 import vlc
 import random
@@ -26,7 +27,6 @@ class VLC:
         self.queuelist = []
         self.memorylist = list(range(1, self.playlist_count))
         random.shuffle(self.memorylist)
-        print(self.memorylist)
         self.addFromPlaylist()
         self.event_vlc()
 
@@ -72,6 +72,7 @@ class VLC:
                     try:
                         url_yt = format['audio_channels']
                         url_yt = format['url']
+                        self.currentDuration = entries['duration']
                         self.currentTitle = entries['title']
                         break
                     except:
@@ -200,6 +201,7 @@ class SpiMusik:
         self.titlePlayingBox = tk.Frame(self.root, name="currentplay")
         self.controlBox = tk.Frame(self.root, name="volume")
         self.controlBtnBox = tk.Frame(self.root, name="bouton")
+        self.playerProgress = tk.Frame(self.root, name="progress")
         self.playlistBox = tk.Frame(self.root, name="queue")
 
         # Create a label for the slider
@@ -244,6 +246,12 @@ class SpiMusik:
 
         self.controlBtnBox.pack()
 
+        self.player_progress = tk.Label(
+            self.playerProgress, name="player_progress", text="0:00 / 0:00")
+        self.player_progress.grid(column=0, row=0)
+
+        self.playerProgress.pack()
+
         self.vlclistbox = tk.Listbox(self.playlistBox, width=40,
                                      height=15, name="queuelistbox")
 
@@ -251,9 +259,9 @@ class SpiMusik:
         self.vlclistbox.select_set(1)
         self.vlclistbox.grid(column=0, row=0)
 
-        self.aaa_button = tk.Button(self.playlistBox, name="remove_button", text="Remove from playlist",
-                                    command=lambda: player.remove_from_playlist())
-        self.aaa_button.grid(column=0, row=1)
+        self.remove_button = tk.Button(self.playlistBox, name="remove_button", text="Remove from playlist",
+                                       command=lambda: player.remove_from_playlist())
+        self.remove_button.grid(column=0, row=1)
 
         self.playlistBox.pack()
 
@@ -261,6 +269,16 @@ class SpiMusik:
         self.volume_label.config(text=f"Volume: {value}")
         player.volumelevel = value
         player.volume()
+
+    def current_player_time(self):
+        current_time_min = (player.mediaPlayer.get_time() // 1000) // 60
+        current_time_sec = (player.mediaPlayer.get_time() // 1000) % 60
+        total_time_min = player.currentDuration // 60
+        total_time_sec = player.currentDuration % 60
+
+        actual_time = f"{current_time_min:02d}:{current_time_sec:02d} / {total_time_min:02d}:{total_time_sec:02d}"
+        self.player_progress.config(text=actual_time)
+        self.root.after(1000, self.current_player_time)
 
 
 #############################################################################################################
@@ -394,4 +412,5 @@ player = VLC()
 app = SpiMusik()
 # Run the window
 app.root.after(1000, player.updateTitle())
+app.root.after(2000, app.current_player_time())
 app.root.mainloop()
