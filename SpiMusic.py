@@ -66,20 +66,24 @@ class VLC:
 
             url_yt = ""
 
-            # iterate through all of the available formats
-            for entries in video_info['entries']:
-                for i, format in enumerate(entries['formats']):
-                    try:
-                        url_yt = format['audio_channels']
-                        url_yt = format['url']
-                        self.currentDuration = entries['duration']
-                        self.currentTitle = entries['title']
-                        break
-                    except:
-                        pass
+            if video_info['entries'][0] is None:
+                print("Video is private or unavailable")
+                self.addFromPlaylist()
+            else:
+                # iterate through all of the available formats
+                for entries in video_info['entries']:
+                    for i, format in enumerate(entries['formats']):
+                        try:
+                            url_yt = format['audio_channels']
+                            url_yt = format['url']
+                            self.currentDuration = entries['duration']
+                            self.currentTitle = entries['title']
+                            break
+                        except:
+                            pass
 
-            self.mediaPlayer.set_mrl(url_yt, ":no-video")
-            self.mediaPlayer.play()
+                self.mediaPlayer.set_mrl(url_yt, ":no-video")
+                self.mediaPlayer.play()
 
     def addFromQueuelist(self):
         # (link, title, user)
@@ -236,9 +240,9 @@ class SpiMusik:
                                      command=lambda: player.next())
         self.next_button.grid(column=2, row=2)
 
-        self.test_button = tk.Button(self.controlBtnBox, name="test_button", text="TEST",
-                                     command=lambda: player.test())
-        self.test_button.grid(column=3, row=2)
+        # self.test_button = tk.Button(self.controlBtnBox, name="test_button", text="TEST",
+        #                              command=lambda: player.test())
+        # self.test_button.grid(column=3, row=2)
 
         self.connect_button = tk.Button(self.controlBtnBox, name="connect_button", text="Connect",
                                         command=lambda: on_connect())
@@ -372,7 +376,7 @@ def on_message(ws, message):
         case 'notification':
             event_notification(data)
         case 'session_keepalive':
-            print('still alive...')
+            print('.', end="")
 
 
 def on_error(ws, error):
