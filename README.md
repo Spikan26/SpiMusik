@@ -27,6 +27,7 @@ MUSIC_REWARD_NAME = "<YOUR_CHANNEL_REWARD_NAME>"
 ```
 
 - **[WTF is TWITCH_CLIENT_ID] ?**
+
 You can get it by creating an application with this link [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps). This is the client_id of your application.
 
 In the "Redirect url" section, add the following URL : 
@@ -36,6 +37,7 @@ https://twitchapps.com/tokengen/
 ```
 
 - **[WTF is TWITCH_AUTH_TOKEN] ?**
+
 To get your OAuth Token, you must go to this link by replacing <CLIENT_ID> with your TWITCH_CLIENT_ID :
 
 ```

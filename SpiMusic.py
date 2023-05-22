@@ -37,8 +37,8 @@ class VLC:
     def __init__(self):
         self.volumelevel = 50
         self.currentTitle = ""
-        self.playlist_id = self.getIDPlaylist(config.playlistURL)
-        self.playlist_count = self.getPlaylistCount(config.playlistURL)
+        self.playlist_id = self.getIDPlaylist(config.PLAYLIST_URL)
+        self.playlist_count = self.getPlaylistCount(config.PLAYLIST_URL)
         self.mediaPlayer = vlc.MediaPlayer('--loop')
         self.mediaPlayer.audio_set_volume(50)
         self.queuelist = []
