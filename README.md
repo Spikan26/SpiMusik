@@ -12,7 +12,7 @@
 
 
 # Config File
-Create a config file with the following :
+Create a file named `config.py` with the following inside:
 
 ```py
 playlistURL = "<YOUR_YOUTUBE_PLAYLIST>"
