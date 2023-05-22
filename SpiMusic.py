@@ -13,7 +13,7 @@ from yt_dlp import YoutubeDL
 import config
 
 # Global Variable
-playState = True
+playState = False
 firstPlay = True
 MAX_TIME_TO_WAIT_FOR_LOGIN = 3
 BROADCASTER_ID = ""
@@ -100,7 +100,10 @@ class VLC:
                             pass
 
                 self.mediaPlayer.set_mrl(url_yt, ":no-video")
-                self.mediaPlayer.play()
+                if firstPlay:
+                    pass
+                else:
+                    self.mediaPlayer.play()
 
     def addFromQueuelist(self):
         # (link, title, user)
