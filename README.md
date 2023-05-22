@@ -15,7 +15,7 @@
 Create a file named `config.py` with the following inside:
 
 ```py
-playlistURL = "<YOUR_YOUTUBE_PLAYLIST>"
+PLAYLIST_URL = "<YOUR_YOUTUBE_PLAYLIST>"
 
 TWITCH_CLIENT_ID = "<YOUR_CLIENT_ID>"
 TWITCH_AUTH_TOKEN = "<YOUR_OAUTH_TOKEN>"
