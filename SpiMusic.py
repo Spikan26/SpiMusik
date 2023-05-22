@@ -17,6 +17,7 @@ playState = True
 firstPlay = True
 MAX_TIME_TO_WAIT_FOR_LOGIN = 3
 BROADCASTER_ID = ""
+MODERATORS_LIST = set()
 MESSAGE_RATE = 0.5
 MAX_QUEUE_LENGTH = 20
 MAX_WORKERS = 100
@@ -306,7 +307,7 @@ class SpiMusik:
 
 ##################### Websocket Twitch : Custom Reward #####################
 
-def Pogeh(data):
+def eventsub_add_music(data):
     user_name = data["payload"]["event"]["user_name"]
     user_input = data["payload"]["event"]["user_input"]
     print(user_name+': '+user_input)
@@ -385,11 +386,27 @@ def eventsub_get_broadcast_id():
     return data['data'][0]['id']
 
 
+def eventsub_get_moderators(broad_id):
+    url = 'https://api.twitch.tv/helix/moderation/moderators?broadcaster_id=' + broad_id
+    headers = {
+        "Client-ID": config.TWITCH_CLIENT_ID,
+        "Authorization": "Bearer "+config.TWITCH_AUTH_TOKEN,
+        "Content-Type": "application/json"
+    }
+    response = requests.get(url, headers=headers)
+    data = json.loads(response.content)
+    mod_list = set()
+    mod_list.add(config.BROADCASTER_USER_NAME)
+    for mod in data['data']:
+        mod_list.add(mod['user_name'].lower())
+    return mod_list
+
+
 def event_notification(data):
 
     match data["payload"]["event"]["reward"]["title"]:
         case config.MUSIC_REWARD_NAME:
-            Pogeh(data)
+            eventsub_add_music(data)
         case _:
             # print(data)
             pass
@@ -492,7 +509,7 @@ class Twitch:
                     self.partial = buffer[end:]
 
                 if matches[0].start() != 0:
-                    # If we get here, we might have missed a message. pepeW
+                    # If we get here, we might have missed a message.
                     print(
                         'oops, i think we missed a message....')
 
@@ -606,7 +623,7 @@ def handle_message(message):
         username = message['username'].lower()
         # print("Got this message from " + username + ": " + msg)
 
-        if msg.startswith("!spimusik") and username == "spikan":
+        if msg.startswith("!spimusik") and (username in MODERATORS_LIST):
             msg_split = msg.split(' ')
             try:
                 print(msg_split[1])
@@ -619,7 +636,7 @@ def handle_message(message):
                             username+"\",\"user_input\":\"" + \
                             message['message']+"\"}}}"
                         data = json.loads(datajson)
-                        Pogeh(data)
+                        eventsub_add_music(data)
                     case 'remove':
                         try:
                             app.vlclistbox.delete(int(msg_split[2])-1)
@@ -628,7 +645,7 @@ def handle_message(message):
                             pass
                     case 'check':
                         print(player.queuelist[int(msg_split[2])])
-                        twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME +
+                        twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
                                          ' :Song in position '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])]["user"])+'\r\n').encode())
                     case 'next':
                         player.next()
@@ -675,10 +692,12 @@ def on_close(ws, reason, details):
 
 def on_open(ws):
     global BROADCASTER_ID
+    global MODERATORS_LIST
 
     print("Connexion with twitch")
     eventsub_clean()
     BROADCASTER_ID = eventsub_get_broadcast_id()
+    MODERATORS_LIST = eventsub_get_moderators(BROADCASTER_ID)
     print('Broadcast ID:', BROADCASTER_ID)
 
 
