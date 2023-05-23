@@ -193,17 +193,7 @@ class VLC:
             del self.queuelist[int(selection)]
 
     def test(self):
-        user_request = "Spikan"
-        link = "https://www.youtube.com/watch?v=LFFazcHOj5Y"
-        with YoutubeDL({'ignoreerrors': True, 'quiet': True}) as ydl:
-            video_info = ydl.extract_info(url=link, download=False)
-            with open('aaaaa.txt', 'w', encoding='utf-8') as f:
-                f.write(str(video_info))
-
-            self.queuelist.append(
-                {"link": link, "title": video_info['title'], "user": user_request})
-            print("ADDED TO QUEUELIST")
-            app.vlclistbox.insert(tk.END, str(video_info['title']))
+        pass
 
 
 ##################### Tkinter #####################
@@ -570,7 +560,7 @@ class Twitch:
 
         return privmsgs
 
-    def bruh(self):
+    def test_msg(self):
         self.sock.send(b'PRIVMSG #spikan :This is a text message\r\n')
 
 
@@ -685,12 +675,14 @@ def on_error(ws, error):
     # print(error)
     print('Error Websocket')
     print(str(error))
+    app.connect_button.configure(background="#f0f0f0")
 
 
 def on_close(ws, reason, details):
     print(str(reason))
     print(str(details))
     print('Websocket: closed')
+    app.connect_button.configure(background="#f0f0f0")
 
 
 def on_open(ws):
@@ -702,6 +694,7 @@ def on_open(ws):
     BROADCASTER_ID = eventsub_get_broadcast_id()
     MODERATORS_LIST = eventsub_get_moderators(BROADCASTER_ID)
     print('Broadcast ID:', BROADCASTER_ID)
+    app.connect_button.configure(background="#deadf0")
 
 
 def connect_to_websocket():
@@ -714,6 +707,10 @@ def connect_to_websocket():
 
 
 def on_connect():
+    mythread = threading.enumerate()
+    for thread_obj in mythread:
+        if "connect_to_websocket" in thread_obj.name:
+            return
     thr = threading.Thread(target=connect_to_websocket)
     thr.start()
     twirc.twitch_connect(config.BROADCASTER_USER_NAME.lower())

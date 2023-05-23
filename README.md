@@ -4,11 +4,11 @@
 
 **Install Python**
 
-**Install at least the following** (a few other packages are needed):
+**Install at least the following**:
 - pip install websocket-client
 - pip install yt_dlp
 - pip install python-vlc
-- pip install json
+- pip install requests
 
 
 # Config File
