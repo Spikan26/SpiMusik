@@ -305,7 +305,7 @@ def eventsub_add_music(data):
     user_input = data["payload"]["event"]["user_input"]
     print(user_name+': '+user_input)
     x = re.findall(
-        "http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)[\w\=]*)?", user_input)
+        "http(?:s?):\/\/(?:www\.)?(?:music\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)[\w\=]*)?", user_input)
     if len(x) > 0:
         request_url = "https://www.youtube.com/watch?v="+x[0][0]
 
