@@ -37,6 +37,7 @@ class VLC:
     def __init__(self):
         self.volumelevel = 50
         self.currentTitle = ""
+        self.yt_url = ""
         self.playlist_id = self.getIDPlaylist(config.PLAYLIST_URL)
         self.playlist_count = self.getPlaylistCount(config.PLAYLIST_URL)
         self.mediaPlayer = vlc.MediaPlayer('--loop')
@@ -93,6 +94,8 @@ class VLC:
                         try:
                             url_yt = format['audio_channels']
                             url_yt = format['url']
+                            self.yt_url = "www.youtube.com/watch?v=" + \
+                                entries['id']
                             self.currentDuration = entries['duration']
                             self.currentTitle = entries['title']
                             break
@@ -118,6 +121,8 @@ class VLC:
                 try:
                     url_yt = format['audio_channels']
                     url_yt = format['url']
+                    self.yt_url = "www.youtube.com/watch?v=" + \
+                        video_info['id']
                     self.currentTitle = video_info['title']
                     break
                 except:
@@ -193,6 +198,7 @@ class VLC:
             del self.queuelist[int(selection)]
 
     def test(self):
+        print(self.yt_url)
         pass
 
 
@@ -305,7 +311,7 @@ def eventsub_add_music(data):
     user_input = data["payload"]["event"]["user_input"]
     print(user_name+': '+user_input)
     x = re.findall(
-        "http(?:s?):\/\/(?:www\.)?(?:music\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)[\w\=]*)?", user_input)
+        "(?:http)?(?:s?)(?::\/\/)?(?:www\.)?(?:music\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)[\w\=]*)?", user_input)
     if len(x) > 0:
         request_url = "https://www.youtube.com/watch?v="+x[0][0]
 
@@ -622,27 +628,66 @@ def handle_message(message):
                 print(msg_split[1])
                 match msg_split[1]:
                     case 'help':
-                        pass
+                        if len(msg_split) > 2:
+                            match msg_split[2]:
+                                case 'url':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[url] Show the title and URL of current song'+'\r\n').encode())
+                                case 'add':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[add + youtube_url] Add youtube song to the playlist. (ex: !spimusik add www.youtube.com/watc...)'+'\r\n').encode())
+                                case 'remove':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[remove + index] Remove the song at the corresponding index. Can use Check command before to get the song. (ex: !spimusik remove 2)'+'\r\n').encode())
+                                case 'check':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[check + index] Check the song title and URL at the corresponding index. (ex: !spimusik check 2)'+'\r\n').encode())
+                                case 'next':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[next] Skip the current song. (Can also use Skip command)'+'\r\n').encode())
+                                case 'skip':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[skip] Skip the current song. (Can also use Next command)'+'\r\n').encode())
+                                case '_':
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[Commands for all] url | [Commands for moderators] add / remove / check / next (or skip) '+'\r\n').encode())
+                        else:
+                            twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                             ' :[Commands for all] url | [Commands for moderators] add / remove / check / next (or skip) '+'\r\n').encode())
                     case 'add':
-                        print("Adding song to queue")
-                        datajson = "{\"payload\":{\"event\":{\"user_name\":\"" + \
-                            username+"\",\"user_input\":\"" + \
-                            message['message']+"\"}}}"
-                        data = json.loads(datajson)
-                        eventsub_add_music(data)
+                        if username in MODERATORS_LIST:
+                            print("Adding song to queue")
+                            datajson = "{\"payload\":{\"event\":{\"user_name\":\"" + \
+                                username+"\",\"user_input\":\"" + \
+                                message['message']+"\"}}}"
+                            data = json.loads(datajson)
+                            eventsub_add_music(data)
                     case 'remove':
+                        if username in MODERATORS_LIST:
+                            try:
+                                app.vlclistbox.delete(int(msg_split[2])-1)
+                                del player.queuelist[int(msg_split[2]-1)]
+                                twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                 ' :Song removed !'+'\r\n').encode())
+                            except:
+                                pass
+                    case 'check':
                         try:
-                            app.vlclistbox.delete(int(msg_split[2])-1)
-                            del player.queuelist[int(msg_split[2]-1)]
+                            if (username in MODERATORS_LIST):
+                                print(player.queuelist[int(msg_split[2])-1])
+                                twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                 ' :[Song in position] '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])-1]["user"])+' - '+str(player.queuelist[int(msg_split[2])-1]["link"])+'\r\n').encode())
                         except:
                             pass
-                    case 'check':
-                        print(player.queuelist[int(msg_split[2])])
+                    case 'url':
                         twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                         ' :Song in position '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])]["user"])+'\r\n').encode())
+                                         ' :[Current song] - '+str(player.currentTitle)+' - '+str(player.yt_url)+'\r\n').encode())
                     case 'next':
-                        player.next()
-                        pass
+                        if username in MODERATORS_LIST:
+                            player.next()
+                    case 'skip':
+                        if username in MODERATORS_LIST:
+                            player.next()
                     case _:
                         pass
             except:
