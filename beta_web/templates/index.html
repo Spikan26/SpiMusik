@@ -1,0 +1,56 @@
+<!doctype html>
+
+<body style='background-color: #2b2e38; color: floralwhite;'>
+    <p style='background-color: #3c404b; padding: 5px; font-size: 12px; border-radius: 5px;'>
+        <b>Title : </b><span id='current-title'>{{ player.currentTitle }}</span>
+    </p>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="100" {% if player %} value="{{ player.volumelevel }}" {% else %} value="50" {%
+            endif %} class="slider" id="myRange">
+    </div>
+    <form method='post' action='/button'>
+        <input type='submit' value='PLAY' name='play_button' />
+        <input type='submit' value='NEXT' name='next_button' />
+        <input type='submit' value='STOP' name='stop_button' />
+    </form>
+    <p style='background-color: #3c404b; padding: 5px; font-size: 12px; border-radius: 5px;'>
+        <span id='current-duration'>00:00 / 00:00</span>
+    </p>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+        var slider = document.getElementById("myRange");
+        
+        function updateCurrentTitle() {
+            $.ajax({
+                url: '/get_current_title',  // Endpoint to retrieve the currentTitle value
+                method: 'GET',
+                success: function(response) {
+                    $('#current-title').text(response);  // Update the value in the HTML
+                }
+            });
+        }
+
+        function updateDurationTitle() {
+            $.ajax({
+                url: '/get_current_duration',  // Endpoint to retrieve the currentTitle value
+                method: 'GET',
+                success: function(response) {
+                    $('#current-duration').text(response);  // Update the value in the HTML
+                }
+            });
+        }
+
+        // Update the current slider value (each time you drag the slider handle)
+        slider.oninput = function () {
+            $.getJSON('/volume/'+slider.value,
+                    function(data) {
+                  //do nothing
+                });
+        }
+
+        setInterval(updateCurrentTitle, 5000);
+        setInterval(updateDurationTitle, 1000);
+
+    </script>
+
+</body>
