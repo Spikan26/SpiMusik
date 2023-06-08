@@ -674,18 +674,23 @@ def handle_message(message):
                     case 'check':
                         if len(msg_split) > 2:
                             try:
-                                if (username in MODERATORS_LIST):
-                                    print(
-                                        player.queuelist[int(msg_split[2])-1])
-                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                                     ' :[Song in position] '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])-1]["user"])+' - '+str(player.queuelist[int(msg_split[2])-1]["link"])+'\r\n').encode())
+                                twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                 ' :[Song in position] '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])-1]["user"])+' - '+str(player.queuelist[int(msg_split[2])-1]["link"])+'\r\n').encode())
                             except:
                                 pass
+                        # No arguments
                         else:
                             try:
-                                if (username in MODERATORS_LIST):
-                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                                     ' :[Check] Il y a '+str(len(player.queuelist))+' musique dans la file d\'attente'+'\r\n').encode())
+                                twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                 ' :[Check] '+str(len(player.queuelist))+' song in the waitlist'+'\r\n').encode())
+
+                                for i, queue in enumerate(player.queuelist):
+                                    if queue["user"] == username:
+                                        twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                         ' :['+username+'] '+str(i)+' song before next request'+'\r\n').encode())
+                                        return ""
+                                twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                 ' :['+username+'] No song requested'+'\r\n').encode())
                             except:
                                 pass
                     case 'url':
