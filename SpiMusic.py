@@ -311,7 +311,7 @@ def eventsub_add_music(data):
     user_input = data["payload"]["event"]["user_input"]
     print(user_name+': '+user_input)
     x = re.findall(
-        "(?:http)?(?:s?)(?::\/\/)?(?:www\.)?(?:music\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)[\w\=]*)?", user_input)
+        "(?:http)?(?:s?)(?::\/\/)?(?:www\.)?(?:music\.)?youtu(?:be\.com)?(?:\/watch\?.*v=|\.be\/|\/v\/|\/embed\/|\/e\/)?(?:\/shorts\/)?([\w\-\_]*)(&(amp;)[\w\=]*)?", user_input)
     if len(x) > 0:
         request_url = "https://www.youtube.com/watch?v="+x[0][0]
 
@@ -672,13 +672,22 @@ def handle_message(message):
                             except:
                                 pass
                     case 'check':
-                        try:
-                            if (username in MODERATORS_LIST):
-                                print(player.queuelist[int(msg_split[2])-1])
-                                twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                                 ' :[Song in position] '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])-1]["user"])+' - '+str(player.queuelist[int(msg_split[2])-1]["link"])+'\r\n').encode())
-                        except:
-                            pass
+                        if len(msg_split) > 2:
+                            try:
+                                if (username in MODERATORS_LIST):
+                                    print(
+                                        player.queuelist[int(msg_split[2])-1])
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[Song in position] '+str(msg_split[2])+' - '+str(player.queuelist[int(msg_split[2])-1]["title"])+' - Request by '+str(player.queuelist[int(msg_split[2])-1]["user"])+' - '+str(player.queuelist[int(msg_split[2])-1]["link"])+'\r\n').encode())
+                            except:
+                                pass
+                        else:
+                            try:
+                                if (username in MODERATORS_LIST):
+                                    twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
+                                                     ' :[Check] Il y a '+str(len(player.queuelist))+' musique dans la file d\'attente'+'\r\n').encode())
+                            except:
+                                pass
                     case 'url':
                         twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
                                          ' :[Current song] - '+str(player.currentTitle)+' - '+str(player.yt_url)+'\r\n').encode())
