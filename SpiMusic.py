@@ -641,7 +641,7 @@ def handle_message(message):
                                                      ' :[remove + index] Remove the song at the corresponding index. Can use Check command before to get the song. (ex: !spimusik remove 2)'+'\r\n').encode())
                                 case 'check':
                                     twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                                     ' :[check + index] Check the song title and URL at the corresponding index. (ex: !spimusik check 2)'+'\r\n').encode())
+                                                     ' :[check] Show the current song & url [check + index] Check the song and URL at the corresponding index. (ex: !spimusik check 2). Also show how many songs before your next request.'+'\r\n').encode())
                                 case 'next':
                                     twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
                                                      ' :[next] Skip the current song. (Can also use Skip command)'+'\r\n').encode())
@@ -653,7 +653,7 @@ def handle_message(message):
                                                      ' :[Commands for all] url | [Commands for moderators] add / remove / check / next (or skip) '+'\r\n').encode())
                         else:
                             twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                             ' :[Commands for all] url | [Commands for moderators] add / remove / check / next (or skip) '+'\r\n').encode())
+                                             ' :[Commands for all] url / check [Commands for moderators] add / remove / next (or skip) '+'\r\n').encode())
                     case 'add':
                         if username in MODERATORS_LIST:
                             print("Adding song to queue")
