@@ -1,9 +1,14 @@
 from update_check import checkForUpdates
 
-# SpiMusic.py
-checkForUpdates(
-    "SpiMusic.py", "https://raw.githubusercontent.com/Spikan26/SpiMusik/main/SpiMusic.py")
+ListOfFiles = ["SpiMusic.py", "README.md",
+               ".gitignore", ".gitattributes", "SpiUpdate.py"]
 
-# README.md
-checkForUpdates(
-    "README.md", "https://raw.githubusercontent.com/Spikan26/SpiMusik/main/README.md")
+for file in ListOfFiles:
+    try:
+        print("Checking for updates : " + file)
+        checkForUpdates(
+            file, "https://raw.githubusercontent.com/Spikan26/SpiMusik/main/"+file)
+    except:
+        print("Couldn't find or couldn't update the file "+file)
+
+print("All files updated")

@@ -15,15 +15,15 @@
 Create a file named **`config.py`** with the following inside:
 
 ```py
-PLAYLIST_URL = "<YOUR_YOUTUBE_PLAYLIST>"
+PLAYLIST_URL = "<YOUR_YOUTUBE_PLAYLIST>"   # ex: https://www.youtube.com/playlist?list=...
 
 TWITCH_CLIENT_ID = "<YOUR_CLIENT_ID>"
 TWITCH_AUTH_TOKEN = "<YOUR_OAUTH_TOKEN>"
 
 
-BROADCASTER_USER_NAME = "<YOUR_TWITCH_USERNAME>"
+BROADCASTER_USER_NAME = "<YOUR_TWITCH_USERNAME>"   # ex: spikan
 
-MUSIC_REWARD_NAME = "<YOUR_CHANNEL_REWARD_NAME>"
+MUSIC_REWARD_NAME = "<YOUR_CHANNEL_REWARD_NAME>"   # ex: SpiMusik
 ```
 
 - **`[WTF is TWITCH_CLIENT_ID] ?`**
