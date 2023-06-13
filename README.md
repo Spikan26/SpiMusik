@@ -1,15 +1,23 @@
-(I'll make a guide later on how to install it, but for now, just ask me on discord)
+# Installation
 
-**Install VLC (x64)**
+### **Install VLC (x64)**
 
-**Install Python**
+[VLC Media Player](https://www.videolan.org/vlc/)
 
-**Install at least the following**:
-- `pip install websocket-client`
-- `pip install yt_dlp`
-- `pip install python-vlc`
-- `pip install requests`
+### **Install Python**
 
+[Python Website](https://www.python.org/downloads/)
+
+You can check if Python is correctly installed by opening a command prompt (cmd in the search bar) and type : **`python --version`** or **`py --version`**
+
+Once Python is installed, navigate to the SpiMusik directory using the command prompt.
+You can type **`cd C:/<YOUR_DIRECTORY_PATH>/`**
+
+Then, use the following command  :
+
+```
+pip install -r requirements.txt
+```
 
 # Config File
 Create a file named **`config.py`** with the following inside:
@@ -44,6 +52,11 @@ To get your OAuth Token, you must go to this link by replacing <CLIENT_ID> with 
 https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=<CLIENT_ID>&redirect_uri=https://twitchapps.com/tokengen/&scope=channel%3Aread%3Aredemptions+channel%3Amanage%3Aredemptions+chat%3Aread+chat%3Aedit+moderation%3Aread
 ```
 
+# How To Use ?
+
+Simply launch **`SpiMusik.py`**. A console command wil open before the application. This console contain all the log for the application, including error, information about the song and who requested it, new song added, etc..
+
+To update the program, launch **`SpiUpdate.py`**
 
 # Twitch chat command
 
