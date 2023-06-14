@@ -650,7 +650,7 @@ def handle_message(message):
                                                      ' :[skip] Skip the current song. (Can also use Next command)'+'\r\n').encode())
                                 case '_':
                                     twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
-                                                     ' :[Commands for all] url | [Commands for moderators] add / remove / check / next (or skip) '+'\r\n').encode())
+                                                     ' :[Commands for all] url / check [Commands for moderators] add / remove / next (or skip) '+'\r\n').encode())
                         else:
                             twirc.sock.send(('PRIVMSG #'+config.BROADCASTER_USER_NAME.lower() +
                                              ' :[Commands for all] url / check [Commands for moderators] add / remove / next (or skip) '+'\r\n').encode())
