@@ -197,6 +197,10 @@ class VLC:
             app.vlclistbox.delete(selection)
             del self.queuelist[int(selection)]
 
+    def add_favorite(self):
+        with open('favorite.txt', 'a', encoding='utf-8') as f:
+            f.write(str(self.currentTitle)+' - '+str(self.yt_url)+'\n')
+
     def test(self):
         print(self.yt_url)
         pass
@@ -262,6 +266,10 @@ class SpiMusik:
         self.connect_button = tk.Button(self.controlBtnBox, name="connect_button", text="Connect",
                                         command=lambda: on_connect())
         self.connect_button.grid(column=4, row=2)
+
+        self.connect_button = tk.Button(self.controlBtnBox, name="favorite_button", text="Favorite",
+                                        command=lambda: player.add_favorite())
+        self.connect_button.grid(column=5, row=2)
 
         self.controlBtnBox.pack()
 

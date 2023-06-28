@@ -1,4 +1,5 @@
 config.py
 current_title_source.txt
+favorite.txt
 __pycache__
 test_ui
