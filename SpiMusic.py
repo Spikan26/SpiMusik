@@ -78,35 +78,40 @@ class VLC:
 
         play_url = 'https://www.youtube.com/watch?v=gg&list=' + \
             self.playlist_id + '&index='+str(randid)
-        with YoutubeDL({'ignoreerrors': True, 'playlist_items': str(randid), 'quiet': True}) as ydl:
+        with YoutubeDL({'ignoreerrors': True, 'playlist_items': str(randid), 'quiet': True, 'extract_flat': False}) as ydl:
             video_info = ydl.extract_info(
                 play_url, download=False)
 
             url_yt = ""
 
-            if video_info['entries'][0] is None:
+            try:
+                if video_info['entries'][0] is None:
+                    print("Video is private or unavailable")
+                    self.addFromPlaylist()
+
+                else:
+                    # iterate through all of the available formats
+                    for entries in video_info['entries']:
+                        for i, format in enumerate(entries['formats']):
+                            try:
+                                url_yt = format['audio_channels']
+                                url_yt = format['url']
+                                self.yt_url = "www.youtube.com/watch?v=" + \
+                                    entries['id']
+                                self.currentDuration = entries['duration']
+                                self.currentTitle = entries['title']
+                                break
+                            except:
+                                pass
+
+                    self.mediaPlayer.set_mrl(url_yt, ":no-video")
+                    if firstPlay:
+                        pass
+                    else:
+                        self.mediaPlayer.play()
+            except:
                 print("Video is private or unavailable")
                 self.addFromPlaylist()
-            else:
-                # iterate through all of the available formats
-                for entries in video_info['entries']:
-                    for i, format in enumerate(entries['formats']):
-                        try:
-                            url_yt = format['audio_channels']
-                            url_yt = format['url']
-                            self.yt_url = "www.youtube.com/watch?v=" + \
-                                entries['id']
-                            self.currentDuration = entries['duration']
-                            self.currentTitle = entries['title']
-                            break
-                        except:
-                            pass
-
-                self.mediaPlayer.set_mrl(url_yt, ":no-video")
-                if firstPlay:
-                    pass
-                else:
-                    self.mediaPlayer.play()
 
     def addFromQueuelist(self):
         # (link, title, user)
