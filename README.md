@@ -1,5 +1,9 @@
 # Installation
 
+### **Download the project**
+
+You can click the **Code** button above to download the project
+
 ### **Install VLC (x64)**
 
 [VLC Media Player](https://www.videolan.org/vlc/)
@@ -58,9 +62,42 @@ Simply launch **`SpiMusik.py`**. A console command wil open before the applicati
 
 To update the program, launch **`SpiUpdate.py`**
 
+### SpiMusik's Interface
+
+![SpiMusik interface](https://github.com/Spikan26/SpiMusik/blob/main/SpiMusikCapture.PNG?raw=true)
+
+#### **(1) Current Music Playing** 
+The current music is also written in a text file created by SpiMusik called **`current_title_source.txt`**.
+You can use this text file with OBS to show the music playing.
+To do so, create a new Texte source in OBS, and select **`Read from File`**
+You can then add a scroll filter with Limited Height and Width.
+
+#### **(2) Volume** 
+You can change the volume of the music playing.
+By default, the volume is set to 50
+
+#### **(3) Control Panel** 
+- **Play**
+Use it to play or pause the music. The music stay on its current position
+
+- **Stop**
+Use it to stop the music. The music goes back to the beginning
+
+- **Next**
+Use it to pass to the next song.
+
+- **Connect**
+Use it to connect SpiMusik with Twitch. If the connection is successful, the button will become purple and the console will show dots every 10 seconds.
+
+- **Favorite**
+Use it to save the current song name and link in a text file called **`favorite.txt`**
+
+#### **(4) Twitch Song List** 
+If you have song comming from Twitch, they'll be put in the waiting list here. You can click on them and press the **(5) Remove from playlist** button to remove them from the waiting list.
+
 # Twitch chat command
 
-Once connected, you can use command inside the twitch chat by taping **`!spimusik`** with the wanted command
+Once connected with Twitch, you can use command inside the twitch chat by taping **`!spimusik`** with the wanted command
 
 |Who can use it ?|Command|Description|
 |--|--|--|

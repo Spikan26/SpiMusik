@@ -272,9 +272,9 @@ class SpiMusik:
                                         command=lambda: on_connect())
         self.connect_button.grid(column=4, row=2)
 
-        self.connect_button = tk.Button(self.controlBtnBox, name="favorite_button", text="Favorite",
-                                        command=lambda: player.add_favorite())
-        self.connect_button.grid(column=5, row=2)
+        self.favorite_button = tk.Button(self.controlBtnBox, name="favorite_button", text="Favorite",
+                                         command=lambda: player.add_favorite())
+        self.favorite_button.grid(column=5, row=2)
 
         self.controlBtnBox.pack()
 
