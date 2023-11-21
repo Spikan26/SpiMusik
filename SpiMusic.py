@@ -22,6 +22,7 @@ MESSAGE_RATE = 0.5
 MAX_QUEUE_LENGTH = 20
 MAX_WORKERS = 100
 last_time = time.time()
+is_loop = False
 
 message_queue = []
 
@@ -38,6 +39,7 @@ class VLC:
         self.volumelevel = 50
         self.currentTitle = ""
         self.yt_url = ""
+        self.audio_link = ""
         self.playlist_id = self.getIDPlaylist(config.PLAYLIST_URL)
         self.playlist_count = self.getPlaylistCount(config.PLAYLIST_URL)
         self.mediaPlayer = vlc.MediaPlayer('--loop')
@@ -104,6 +106,7 @@ class VLC:
                             except:
                                 pass
 
+                    self.audio_link = url_yt
                     self.mediaPlayer.set_mrl(url_yt, ":no-video")
                     if firstPlay:
                         pass
@@ -132,7 +135,8 @@ class VLC:
                     break
                 except:
                     pass
-
+            
+            self.audio_link = url_yt
             self.mediaPlayer.set_mrl(url_yt, ":no-video")
             self.mediaPlayer.play()
             print("Request from "+obj_request["user"])
@@ -187,9 +191,14 @@ class VLC:
             vlc.EventType.MediaPlayerEndReached, self.media_player_on, 1)
 
     def media_player_on(self, event, arg):
+        global is_loop
         print("Music ended")
         self.mediaPlayer = vlc.MediaPlayer('--loop')
-        if len(self.queuelist) > 0:
+        if is_loop:
+            self.mediaPlayer.stop()
+            self.mediaPlayer.set_mrl(self.audio_link, ":no-video")
+            self.mediaPlayer.play()
+        elif len(self.queuelist) > 0:
             self.addFromQueuelist()
         else:
             self.addFromPlaylist()
@@ -205,6 +214,15 @@ class VLC:
     def add_favorite(self):
         with open('favorite.txt', 'a', encoding='utf-8') as f:
             f.write(str(self.currentTitle)+' - '+str(self.yt_url)+'\n')
+
+    def looping(self):
+        global is_loop
+        if is_loop:
+            is_loop = False
+            app.loop_button.configure(background="#f0f0f0")
+        else:
+            is_loop = True
+            app.loop_button.configure(background="#9ccfff")
 
     def test(self):
         print(self.yt_url)
@@ -264,17 +282,17 @@ class SpiMusik:
                                      command=lambda: player.next())
         self.next_button.grid(column=2, row=2)
 
+        self.loop_button = tk.Button(self.controlBtnBox, name="loop_button", text="Loop",
+                                     command=lambda: player.looping())
+        self.loop_button.grid(column=3, row=2)
+
         # self.test_button = tk.Button(self.controlBtnBox, name="test_button", text="TEST",
         #                              command=lambda: player.test())
         # self.test_button.grid(column=3, row=2)
 
-        self.connect_button = tk.Button(self.controlBtnBox, name="connect_button", text="Connect",
-                                        command=lambda: on_connect())
-        self.connect_button.grid(column=4, row=2)
-
         self.favorite_button = tk.Button(self.controlBtnBox, name="favorite_button", text="Favorite",
                                          command=lambda: player.add_favorite())
-        self.favorite_button.grid(column=5, row=2)
+        self.favorite_button.grid(column=4, row=2)
 
         self.controlBtnBox.pack()
 
@@ -291,9 +309,16 @@ class SpiMusik:
         self.vlclistbox.select_set(1)
         self.vlclistbox.grid(column=0, row=0)
 
-        self.remove_button = tk.Button(self.playlistBox, name="remove_button", text="Remove from playlist",
+        self.buttonlistBox = tk.Frame(self.playlistBox, name="buttonqueue")
+        self.buttonlistBox.grid(column=0, row=1)
+
+        self.remove_button = tk.Button(self.buttonlistBox, name="remove_button", text="Remove from playlist",
                                        command=lambda: player.remove_from_playlist())
-        self.remove_button.grid(column=0, row=1)
+        self.remove_button.grid(column=0, row=0)
+
+        self.connect_button = tk.Button(self.buttonlistBox, name="connect_button", text="Connect",
+                                        command=lambda: on_connect())
+        self.connect_button.grid(column=1, row=0)
 
         self.playlistBox.pack()
 

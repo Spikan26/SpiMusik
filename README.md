@@ -64,7 +64,7 @@ To update the program, launch **`SpiUpdate.py`**
 
 ### SpiMusik's Interface
 
-![SpiMusik interface](https://github.com/Spikan26/SpiMusik/blob/main/SpiMusikCapture.PNG?raw=true)
+![SpiMusik interface](https://github.com/Spikan26/SpiMusik/blob/main/res/SpiMusikCapture.PNG?raw=true)
 
 #### **(1) Current Music Playing** 
 The current music is also written in a text file created by SpiMusik called **`current_title_source.txt`**.
@@ -82,10 +82,12 @@ By default, the volume is set to 50
 |**`Play`**|Use it to play or pause the music. The music stay on its current position|
 |**`Stop`**|Use it to stop the music. The music goes back to the beginning|
 |**`Next`**|Use it to pass to the next song.|
-|**`Connect`**|Use it to connect SpiMusik with Twitch. If the connection is successful, the button will become purple and the console will show dots every 10 seconds.|
+|**`Loop`**|If the button is active (blue background), replay the song when it end.|
 |**`Favorite`**|Use it to save the current song name and link in a text file called **`favorite.txt`**
 
 #### **(4) Twitch Song List** 
+You can connect SpiMusik with Twitch using the **(5) Connect** button.
+If the connection is successful, the button will become purple and the console will show dots every 10 seconds.
 If you have song comming from Twitch, they'll be put in the waiting list here. You can click on them and press the **(5) Remove from playlist** button to remove them from the waiting list.
 
 # Twitch chat command
